@@ -1,7 +1,11 @@
+using BLL.Services;
+using DAL;
+using DAL.Entities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -25,7 +29,18 @@ namespace LightStreetServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //API Services
             services.AddControllers();
+
+            //DAL Services
+            services.AddDbContext<StreetManagementContext>(options => options.UseSqlServer(Configuration.GetConnectionString("StreetManagementDb")));
+
+            services.AddScoped<UnitOfWork>();
+
+            //BLL Services
+            services.AddScoped<CameraService>();
+            services.AddScoped<LampService>();
+            services.AddScoped<LampTypeService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
