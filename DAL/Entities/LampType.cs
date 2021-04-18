@@ -14,6 +14,7 @@ namespace DAL.Entities
         {
             Lamps = new HashSet<Lamp>();
         }
+
         [Key]
         [Column("LampTypeId")]
         public int Id { get; set; }

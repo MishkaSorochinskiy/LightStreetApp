@@ -1,5 +1,6 @@
 ﻿using BLL.Services;
 using DAL.Entities;
+using Microsoft.AspNet.OData;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace LightStreetServer.Controllers
         }
 
         [HttpGet]
+        [EnableQuery]
         public IQueryable<Camera> Get()
         {
             return CameraService.GetAll();

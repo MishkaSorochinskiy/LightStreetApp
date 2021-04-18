@@ -1,10 +1,11 @@
 ﻿using System;
+using DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 #nullable disable
 
-namespace DAL.Entities
+namespace DAL
 {
     public partial class StreetManagementContext : DbContext
     {
@@ -21,14 +22,6 @@ namespace DAL.Entities
         public virtual DbSet<Lamp> Lamps { get; set; }
         public virtual DbSet<LampType> LampTypes { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlServer("Server=DESKTOP-LEMEMHD;Database=StreetManagement;Trusted_Connection=True;");
-            }
-        }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "Ukrainian_CI_AS");
@@ -37,10 +30,8 @@ namespace DAL.Entities
             {
                 entity.ToTable("Camera");
 
-                entity.HasIndex(e => e.Photo, "UQ__Camera__5C7E46C8C5A627B3")
+                entity.HasIndex(e => e.Photo, "UQ__Camera__5C7E46C8822F2A84")
                     .IsUnique();
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.CreateTime).HasColumnType("datetime");
 
@@ -52,8 +43,6 @@ namespace DAL.Entities
             modelBuilder.Entity<Lamp>(entity =>
             {
                 entity.ToTable("Lamp");
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.CreateTime).HasColumnType("datetime");
 
@@ -71,8 +60,6 @@ namespace DAL.Entities
             modelBuilder.Entity<LampType>(entity =>
             {
                 entity.ToTable("LampType");
-
-                entity.Property(e => e.Id).ValueGeneratedNever();
             });
 
             OnModelCreatingPartial(modelBuilder);

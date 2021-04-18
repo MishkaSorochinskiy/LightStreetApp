@@ -1,6 +1,8 @@
 using BLL.Services;
 using DAL;
 using DAL.Entities;
+using Microsoft.AspNet.OData.Extensions;
+using Microsoft.AspNet.OData.Query;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -30,7 +32,8 @@ namespace LightStreetServer
         public void ConfigureServices(IServiceCollection services)
         {
             //API Services
-            services.AddControllers();
+            services.AddControllers(option => option.EnableEndpointRouting = true);
+            services.AddOData();
 
             //DAL Services
             services.AddDbContext<StreetManagementContext>(options => options.UseSqlServer(Configuration.GetConnectionString("StreetManagementDb")));
@@ -59,6 +62,8 @@ namespace LightStreetServer
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.Select().Expand().Filter().OrderBy().Count();
+                endpoints.EnableDependencyInjection();
                 endpoints.MapControllers();
             });
         }
