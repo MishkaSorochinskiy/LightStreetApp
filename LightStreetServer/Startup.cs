@@ -1,3 +1,4 @@
+using BLL.InformationalServices;
 using BLL.Services;
 using DAL;
 using DAL.Entities;
@@ -34,6 +35,13 @@ namespace LightStreetServer
             //API Services
             services.AddControllers(option => option.EnableEndpointRouting = true);
             services.AddOData();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", builder =>
+                {
+                    builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                });
+            });
 
             //DAL Services
             services.AddDbContext<StreetManagementContext>(options => options.UseSqlServer(Configuration.GetConnectionString("StreetManagementDb")));
@@ -44,6 +52,7 @@ namespace LightStreetServer
             services.AddScoped<CameraService>();
             services.AddScoped<LampService>();
             services.AddScoped<LampTypeService>();
+            services.AddScoped<ImageAnalyser>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,6 +66,8 @@ namespace LightStreetServer
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("AllowAll");
 
             app.UseAuthorization();
 

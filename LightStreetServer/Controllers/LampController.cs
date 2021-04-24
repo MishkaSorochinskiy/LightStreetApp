@@ -2,6 +2,7 @@
 using BLL.Models;
 using BLL.Services;
 using DAL.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -15,9 +16,12 @@ namespace LightStreetServer.Controllers
     public class LampController : ControllerBase
     {
         public LampService LampService { get; }
-        public LampController(LampService lampService)
+        public ImageAnalyser ImageAnalyser { get; }
+
+        public LampController(LampService lampService, ImageAnalyser imageAnayser)
         {
             LampService = lampService;
+            ImageAnalyser = imageAnayser;
         }
 
         [HttpGet]
@@ -36,6 +40,14 @@ namespace LightStreetServer.Controllers
         public LampInfoOutput Analyse(LampInfoInput model)
         {
             return LampAnalyser.Predict(model);
+        }
+
+        [HttpPost("detect")]
+        public async Task<DetectOutput> Detect(IFormFile file)
+        {
+            var detectResponce = await ImageAnalyser.DetectAsync(file);
+
+            return detectResponce;
         }
     }
 }
