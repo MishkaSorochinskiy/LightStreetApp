@@ -33,5 +33,13 @@ namespace LightStreetServer.Controllers
         {
             return CameraService.GetAll().Where(entity => entity.Id == id).FirstOrDefault();
         }
+
+        [HttpPost]
+        public async Task<Camera> PostCamera(CameraInput camera)
+        {
+            var responce = await CameraService.CreateAsync(camera);
+            
+            return responce;
+        }
     }
 }

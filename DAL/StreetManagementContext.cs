@@ -30,19 +30,23 @@ namespace DAL
             {
                 entity.ToTable("Camera");
 
+                entity.HasKey(entity => entity.Id);
+
+                entity.Property(entity => entity.Id).ValueGeneratedOnAdd();
+
                 entity.HasIndex(e => e.Photo, "UQ__Camera__5C7E46C8822F2A84")
                     .IsUnique();
 
                 entity.Property(e => e.CreateTime).HasColumnType("datetime");
 
-                entity.Property(e => e.Photo)
-                    .IsRequired()
-                    .HasMaxLength(20);
+                entity.Property(e => e.Photo);
             });
 
             modelBuilder.Entity<Lamp>(entity =>
             {
                 entity.ToTable("Lamp");
+
+                entity.HasKey(entity => entity.Id);
 
                 entity.Property(e => e.CreateTime).HasColumnType("datetime");
 
@@ -60,6 +64,8 @@ namespace DAL
             modelBuilder.Entity<LampType>(entity =>
             {
                 entity.ToTable("LampType");
+
+                entity.HasKey(entity => entity.Id);
             });
 
             OnModelCreatingPartial(modelBuilder);

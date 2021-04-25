@@ -44,7 +44,10 @@ namespace LightStreetServer
             });
 
             //DAL Services
-            services.AddDbContext<StreetManagementContext>(options => options.UseSqlServer(Configuration.GetConnectionString("StreetManagementDb")));
+            services.AddDbContext<StreetManagementContext>(options => {
+                options.UseSqlServer(Configuration.GetConnectionString("StreetManagementDb"));
+                options.EnableSensitiveDataLogging();
+            });
 
             services.AddScoped<UnitOfWork>();
 
