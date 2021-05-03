@@ -19,7 +19,6 @@ namespace DAL
         }
 
         public virtual DbSet<Camera> Cameras { get; set; }
-        public virtual DbSet<Lamp> Lamps { get; set; }
         public virtual DbSet<LampType> LampTypes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -40,25 +39,6 @@ namespace DAL
                 entity.Property(e => e.CreateTime).HasColumnType("datetime");
 
                 entity.Property(e => e.Photo);
-            });
-
-            modelBuilder.Entity<Lamp>(entity =>
-            {
-                entity.ToTable("Lamp");
-
-                entity.HasKey(entity => entity.Id);
-
-                entity.Property(e => e.CreateTime).HasColumnType("datetime");
-
-                entity.HasOne(d => d.Camera)
-                    .WithMany(p => p.Lamps)
-                    .HasForeignKey(d => d.CameraId)
-                    .HasConstraintName("FK_Lamp_CameraId_Camera_CameraId");
-
-                entity.HasOne(d => d.LampType)
-                    .WithMany(p => p.Lamps)
-                    .HasForeignKey(d => d.LampTypeId)
-                    .HasConstraintName("FK_Lamp_LampTypeId_LampType_LampTypeId");
             });
 
             modelBuilder.Entity<LampType>(entity =>

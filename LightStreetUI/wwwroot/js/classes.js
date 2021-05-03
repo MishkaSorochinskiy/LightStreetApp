@@ -2,11 +2,14 @@
 const url = "https://localhost:44325";
 const uiUrl = "https://localhost:44322";  
 
-var types = [{ id: 1, type:"Type #1"}, { id: 2, type: "Type #2"}];
+var types = [];
+
+setTypes();
 
 class Point {
     index;
     id;
+    lampTypeId = types[0].id;
     constructor(marker, photo) {
         this.photo = photo;
         this.marker = marker;
@@ -18,10 +21,10 @@ class Point {
     getInfoContent(photo) {
         let selectHtml = `<select class='form-control form-control-sm' onchange="selectChanged(${this.index},this.options[this.selectedIndex].value)">`; 
         for (let i = 0; i < types.length; ++i) {
-            if (i == 0) {
-                selectHtml = selectHtml + `<option selected value=${types[i].id}>${types[i].type}</option>`;
+            if (types[i].id == this.lampTypeId) {
+                selectHtml = selectHtml + `<option selected value=${types[i].id}>${types[i].name}</option>`;
             } else {
-                selectHtml = selectHtml + `<option value=${types[i].id}>${types[i].type}</option>`;
+                selectHtml = selectHtml + `<option value=${types[i].id}>${types[i].name}</option>`;
             }
         }
 
@@ -48,6 +51,8 @@ class Point {
 
         this.infoWindow.setContent(this.getInfoContent(`${uiUrl}/photo.png`));
 
+        this.lampTypeId = this.lampTypeId;
+
         var marker = this.marker;
         this.marker.addListener('click', function () {
             infoWindow.open(map, marker);
@@ -56,8 +61,8 @@ class Point {
 }
 
 function selectChanged(index, value) {
-    console.log(index);
-    console.log(value);
+    let point = newpoints[index];
+    point.lampTypeId = Number.parseInt(value);
 }
 
 function loadLinkClicked(index) {
@@ -69,7 +74,7 @@ function loadLinkClicked(index) {
 
     input.onchange = async (event) => {
         let photoBase64 = await getBase64(event.target.files[0]);
-        var data = { latitude: point.latitude, longtitude: point.longtitude, photo: photoBase64};
+        var data = { latitude: point.latitude, longtitude: point.longtitude, photo: photoBase64, lampTypeId: Number.parseInt(point.lampTypeId) };
         $.ajax({
             type: 'POST',
             url: `${url}/camera`,
@@ -94,4 +99,15 @@ function getBase64(file) {
         reader.onload = () => resolve(reader.result);
         reader.onerror = error => reject(error);
     });
+}
+
+function setTypes() {
+    $.ajax({
+        type: 'GET',
+        url: `${url}/lamptype`,
+        contentType: 'application/json',
+        complete: async (res, success) => {
+            types = res.responseJSON;
+        }
+    }); 
 }

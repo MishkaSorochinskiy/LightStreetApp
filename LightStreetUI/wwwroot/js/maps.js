@@ -138,6 +138,7 @@ function addPoint(point) {
     });
 
     let newpoint = new Point(marker);
+    newpoint.lampTypeId = point.lampTypeId;
     newpoint.index = points.length;
     newpoint.setInfoWindow(new google.maps.InfoWindow(), map);
     newpoint.setInfoPhoto(point)

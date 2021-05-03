@@ -1,4 +1,5 @@
 ﻿using BLL.Services;
+using DAL;
 using DAL.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -13,9 +14,14 @@ namespace LightStreetServer.Controllers
     public class LampTypeController : ControllerBase
     {
         public LampTypeService LampTypeService { get; }
-        public LampTypeController(LampTypeService lampTypeService)
+
+        private UnitOfWork uof;
+
+        public LampTypeController(LampTypeService lampTypeService, UnitOfWork unitOfWork)
         {
             LampTypeService = lampTypeService;
+
+            uof = unitOfWork;
         }
 
         [HttpGet]
@@ -28,6 +34,16 @@ namespace LightStreetServer.Controllers
         public LampType GetById(int id)
         {
             return LampTypeService.GetAll().Where(entity => entity.Id == id).FirstOrDefault();
+        }
+
+        [HttpPost]
+        public async Task<LampType> CreateLampType(LampType lampType)
+        {
+            var newType = uof.Repository<LampType>().Insert(lampType);
+
+            await uof.SaveChangesAsync();
+
+            return newType;
         }
     }
 }

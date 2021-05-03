@@ -53,7 +53,6 @@ namespace LightStreetServer
 
             //BLL Services
             services.AddScoped<CameraService>();
-            services.AddScoped<LampService>();
             services.AddScoped<LampTypeService>();
             services.AddScoped<ImageAnalyser>();
         }

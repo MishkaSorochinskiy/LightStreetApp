@@ -12,7 +12,6 @@ namespace DAL.Entities
     {
         public LampType()
         {
-            Lamps = new HashSet<Lamp>();
         }
 
         [Key]
@@ -23,6 +22,6 @@ namespace DAL.Entities
         public int? Material { get; set; }
         public int? Type { get; set; }
 
-        public virtual ICollection<Lamp> Lamps { get; set; }
+        public string Name { get; set; }
     }
 }

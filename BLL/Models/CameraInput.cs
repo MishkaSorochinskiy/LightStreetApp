@@ -13,5 +13,7 @@ namespace BLL.Models
 
         [Required]
         public double? Longtitude { get; set; }
+
+        public int? LampTypeId { get; set; }
     }
 }

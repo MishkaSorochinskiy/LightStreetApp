@@ -9,11 +9,13 @@
         <div class="col-4">
             <form id="lamp-data">
                 <div class="form-outline mb-3">
-                    <input type="number" id="lightness" aria-label="readonly input example" class="form-control" placeholder="Lightness"/>
+                    <input type="text" id="name" class="form-control" placeholder="Name" autocomplete="off" />
                 </div>
                 <div class="form-outline mb-3">
-                    <input type="number" id="power" class="form-control" placeholder="Power"/>
-                    
+                    <input type="number" id="lightness" aria-label="readonly input example" class="form-control" placeholder="Lightness" />
+                </div>
+                <div class="form-outline mb-3">
+                    <input type="number" id="power" class="form-control" placeholder="Power" />
                 </div>
                 <div class="form-outline mb-3 ">
                     <input type="number" id="distance" class="form-control" placeholder="Distance" />
@@ -35,7 +37,14 @@
                     </select>
                 </div>
 
-                <button type="button" onclick="submitted()" class="btn btn-primary w-100">Calculate</button>
+                <div class="row">
+                    <div class="col-sm">
+                        <button type="button" onclick="submitted()" class="btn btn-primary w-100">Calculate</button>
+                    </div>
+                    <div class="col-sm">
+                        <button type="button" onclick="save()" class="btn btn-success w-100">Save</button>
+                    </div>
+                </div>
             </form>
         </div>
         <div class="col-4">

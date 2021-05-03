@@ -21,11 +21,6 @@ namespace BLL.Services
             ImageAnalyser = imageAnalyser;
         }
 
-        public IQueryable<Lamp> GetAll()
-        {
-            return uof.Repository<Lamp>().Get();
-        }
-
         public async Task<List<LampLightOutput>> GetLampLightsAsync(List<int> cameraIds)
         {
             var cameras = uof.Repository<Camera>().Get(cmr => cameraIds.Contains(cmr.Id)).ToList();

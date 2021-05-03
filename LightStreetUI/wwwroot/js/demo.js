@@ -40,3 +40,22 @@ function submitted() {
         }
     });
 }
+
+function save() {
+    let formValues = {};
+    formValues.power = Number.parseFloat(document.getElementById("power").value);
+    formValues.distance = Number.parseFloat(document.getElementById("distance").value);
+    formValues.type = Number.parseInt(document.getElementById("type").value);
+    formValues.material = Number.parseInt(document.getElementById("material").value);
+    formValues.name = document.getElementById("name").value;
+
+    $.ajax({
+        type: 'POST',
+        url: `${url}/lamptype`,
+        contentType: 'application/json',
+        data: JSON.stringify(formValues),
+        complete: async (res, success) => {
+            console.log(res);
+        }
+    });
+}

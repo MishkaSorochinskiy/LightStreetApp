@@ -1,13 +1,10 @@
 ﻿using BLL.InformationalServices;
 using BLL.Models;
 using BLL.Services;
-using DAL.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace LightStreetServer.Controllers
@@ -16,25 +13,14 @@ namespace LightStreetServer.Controllers
     [Route("[controller]")]
     public class LampController : ControllerBase
     {
-        public LampService LampService { get; }
         public ImageAnalyser ImageAnalyser { get; }
+        public CameraService CameraService { get; }
 
-        public LampController(LampService lampService, ImageAnalyser imageAnayser)
+        public LampController(ImageAnalyser imageAnayser, CameraService cameraService)
         {
-            LampService = lampService;
             ImageAnalyser = imageAnayser;
-        }
 
-        [HttpGet]
-        public IQueryable<Lamp> Get()
-        {
-            return LampService.GetAll();
-        }
-
-        [HttpGet("{id}")]
-        public Lamp GetById(int id)
-        {
-            return LampService.GetAll().Where(entity => entity.Id == id).FirstOrDefault();
+            CameraService = cameraService;
         }
 
         [HttpPost("analyse")]
@@ -46,7 +32,7 @@ namespace LightStreetServer.Controllers
         [HttpPost("analyse-multiple")]
         public async Task<List<LampLightOutput>> AnalyseMultiple(List<int> cameraIds)
         {
-            var responce = await LampService.GetLampLightsAsync(cameraIds);
+            var responce = await CameraService.GetLampLightsAsync(cameraIds);
 
             return responce;
         }
