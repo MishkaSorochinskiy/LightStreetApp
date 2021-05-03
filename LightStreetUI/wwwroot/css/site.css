@@ -2,6 +2,7 @@
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    height:100%;
 }
 
 a, .btn-link {
@@ -187,8 +188,8 @@ app {
 }
 
 .pointphoto {
-    width: 80px;
-    height: 80px;
+    width: 80%;
+    height: 80%;
 }
 
 .loadlinkimage {
@@ -199,4 +200,17 @@ app {
 .photowindow {
     width: 100px;
     height: 100px;
+}
+
+.bg {
+    background-image: url("/bg.jpeg");
+    height: 87vh;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.info-window {
+    max-width: 150px;
+    max-height: 150px;
 }

@@ -2,6 +2,7 @@
 const url = "https://localhost:44325";
 const uiUrl = "https://localhost:44322";  
 
+var types = [{ id: 1, type:"Type #1"}, { id: 2, type: "Type #2"}];
 
 class Point {
     index;
@@ -15,8 +16,18 @@ class Point {
     }
 
     getInfoContent(photo) {
-        let content = `<div>
-                            <div class="row">
+        let selectHtml = `<select class='form-control form-control-sm' onchange="selectChanged(${this.index},this.options[this.selectedIndex].value)">`; 
+        for (let i = 0; i < types.length; ++i) {
+            if (i == 0) {
+                selectHtml = selectHtml + `<option selected value=${types[i].id}>${types[i].type}</option>`;
+            } else {
+                selectHtml = selectHtml + `<option value=${types[i].id}>${types[i].type}</option>`;
+            }
+        }
+
+        selectHtml = selectHtml + "</select>";
+        let content = `<div class="info-window text-center"> ${selectHtml}
+                            <div class="row mt-1">
                                 <div class="col-sm text-right">
                                     <input id="loadphoto" class="none" type="file" accept=".jpeg,.jpg,.png">
                                  </div>
@@ -44,6 +55,10 @@ class Point {
     }
 }
 
+function selectChanged(index, value) {
+    console.log(index);
+    console.log(value);
+}
 
 function loadLinkClicked(index) {
     let point = newpoints[index];

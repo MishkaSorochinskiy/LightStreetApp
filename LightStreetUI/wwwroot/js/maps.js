@@ -27,6 +27,7 @@ function initMap (){
         url: `${url}/camera`,
         contentType: 'application/json',
         complete: (res, success) => {
+            points = [];
             res.responseJSON.forEach(cmr => addPoint(cmr));
         }
     }); 
@@ -66,6 +67,8 @@ function calcRoute() {
                 routespoints = routespoints.concat(pointsBelong(result.routes[i].overview_path));
                 routes.push(result.routes[i].overview_path);
             }
+
+            routespoints = [...new Set(routespoints)];
 
             getLightness(routespoints, routes);
         }
@@ -143,6 +146,7 @@ function addPoint(point) {
 
 function pointsBelong(smoothroute) {
     let routepoints = [];
+
     let polyline = new google.maps.Polyline({
         path: smoothroute,
         strokeColor: '#000000',
@@ -159,15 +163,15 @@ function pointsBelong(smoothroute) {
     return routepoints;
 }
 
-function getLightness(pointsId, routes) {
+function getLightness(cameraIds, routes) {
     (async () => {
-        const rawResponse = await fetch(`${url}Point/lightness`, {
+        const rawResponse = await fetch(`${url}/Lamp/analyse-multiple`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(pointsId)
+            body: JSON.stringify(cameraIds)
         });
         const responce = await rawResponse.json();
 
@@ -181,15 +185,16 @@ function showLightRoutes(lightpoints, routes) {
         for (let subPolyIndex = 0; subPolyIndex < routes[routeIndex].length; subPolyIndex += 1) {
             for (let pointIndex = 0; pointIndex < lightpoints.length; ++pointIndex) {
 
-                let point = points.find(p => p.id == lightpoints[pointIndex].pointId);
+                let point = points.find(p => p.id == lightpoints[pointIndex].cameraId);
 
                 if (point !== undefined) {
                     let latLng = new google.maps.LatLng(point.latitude, point.longtitude);
                     let polyline = new google.maps.Polyline({
-                        path: routes[routeIndex].slice(subPolyIndex, subPolyIndex + 3),
+                        path: routes[routeIndex].slice(subPolyIndex, subPolyIndex + 2),
                         strokeWeight: 9,
                         zIndex: 100
                     });
+
                     if (google.maps.geometry.poly.isLocationOnEdge(latLng, polyline, 0.001)) {
                         coloredpolylines.push({ isLight: lightpoints[pointIndex].isLight, poly: polyline });
                     }

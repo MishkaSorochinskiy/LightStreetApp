@@ -1,6 +1,4 @@
 ﻿using BLL.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Prediction;
 using Microsoft.Azure.CognitiveServices.Vision.CustomVision.Prediction.Models;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -21,7 +19,7 @@ namespace BLL.InformationalServices
             this._config = config;
         }
 
-        public async Task<DetectOutput> DetectAsync(IFormFile file)
+        public async Task<ImagePrediction> DetectAsync(byte[] imgArr)
         {
             HttpClient client = new HttpClient();
             var predictionSection = _config.GetSection("PredictionApi");
@@ -29,17 +27,17 @@ namespace BLL.InformationalServices
             var request = new HttpRequestMessage(HttpMethod.Post, predictionSection["url"]);
             request.Headers.Add("Prediction-Key", predictionSection["key"]);
 
-            var stream = file.OpenReadStream();
-            request.Content = new StreamContent(stream);
+            request.Content = new StreamContent(new MemoryStream(imgArr));
             var responce = await client.SendAsync(request);      
             string jsonResponce = await responce.Content.ReadAsStringAsync();   
             ImagePrediction predictionResult = JsonConvert.DeserializeObject<ImagePrediction>(jsonResponce);
 
-            return DrawRectangles(file, predictionResult);
+            return predictionResult;
         }
-        private DetectOutput DrawRectangles(IFormFile file, ImagePrediction predictionResult)
+
+        public DetectOutput GetLightness(byte[] imgArr, ImagePrediction predictionResult, bool draw = true)
         {
-            SKBitmap bitmap = SKBitmap.Decode(file.OpenReadStream());
+            SKBitmap bitmap = SKBitmap.Decode(imgArr);
             SKCanvas canvas = new SKCanvas(bitmap);
             SKPaint paint = new SKPaint
             {
@@ -83,7 +81,10 @@ namespace BLL.InformationalServices
                                 if (green < 125)
                                     green = 140;
 
-                                bitmap.SetPixel(i, j, new SKColor(103, (byte)green, 52));
+                                if (draw)
+                                {
+                                    bitmap.SetPixel(i, j, new SKColor(103, (byte)green, 52));
+                                }
                             }
                         }
                     }
