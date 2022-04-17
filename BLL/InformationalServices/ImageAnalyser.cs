@@ -39,7 +39,7 @@ namespace BLL.InformationalServices
         {
             SKBitmap bitmap = SKBitmap.Decode(imgArr);
             SKCanvas canvas = new SKCanvas(bitmap);
-            SKPaint paint = new SKPaint
+            SKPaint paintTemporary = new SKPaint
             {
                 IsAntialias = true,
                 Color = new SKColor(220, 38, 38),
@@ -59,34 +59,41 @@ namespace BLL.InformationalServices
                     var width = prediction.BoundingBox.Width * bitmap.Width;
                     var height = prediction.BoundingBox.Height * bitmap.Height;
 
-                    for (int i = (int)Math.Floor(x); i < (int)Math.Ceiling(x+width+(width*0.15)); ++i)
+                    if(prediction.TagName == "lamp")
                     {
-                        for(int j = (int)Math.Floor(y); j< (int)Math.Ceiling(y+height+(height*0.3)); ++j)
+                        for (int i = (int)Math.Floor(x); i < (int)Math.Ceiling(x + width + (width * 0.15)); ++i)
                         {
-                            var pixel = bitmap.GetPixel(i, j);
-
-                            var rlin = PixelInfo.ConvertToLinear(PixelInfo.ConvertToDecimal(pixel.Red));
-                            var glin = PixelInfo.ConvertToLinear(PixelInfo.ConvertToDecimal(pixel.Green));
-                            var blin = PixelInfo.ConvertToLinear(PixelInfo.ConvertToDecimal(pixel.Blue));
-
-                            var Y = PixelInfo.CalculateYLuminence(rlin, glin, blin);
-
-                            var lum = PixelInfo.CalculatePerceivedLightness(Y);
-                            if (lum > PixelInfo.LIGHTNESS)
+                            for (int j = (int)Math.Floor(y); j < (int)Math.Ceiling(y + height + (height * 0.3)); ++j)
                             {
-                                lumSum += lum;
-                                lumCount += 1;
+                                var pixel = bitmap.GetPixel(i, j);
 
-                                var green = (byte)(255 * (lum / 100));
-                                if (green < 125)
-                                    green = 140;
+                                var rlin = PixelInfo.ConvertToLinear(PixelInfo.ConvertToDecimal(pixel.Red));
+                                var glin = PixelInfo.ConvertToLinear(PixelInfo.ConvertToDecimal(pixel.Green));
+                                var blin = PixelInfo.ConvertToLinear(PixelInfo.ConvertToDecimal(pixel.Blue));
 
-                                if (draw)
+                                var Y = PixelInfo.CalculateYLuminence(rlin, glin, blin);
+
+                                var lum = PixelInfo.CalculatePerceivedLightness(Y);
+                                if (lum > PixelInfo.LIGHTNESS)
                                 {
-                                    bitmap.SetPixel(i, j, new SKColor(103, (byte)green, 52));
+                                    lumSum += lum;
+                                    lumCount += 1;
+
+                                    var green = (byte)(255 * (lum / 100));
+                                    if (green < 125)
+                                        green = 140;
+
+                                    if (draw)
+                                    {
+                                        bitmap.SetPixel(i, j, new SKColor(103, (byte)green, 52));
+                                    }
                                 }
                             }
                         }
+                    }
+                    else
+                    {
+                        canvas.DrawRect((float)x, (float)y, (float)width, (float)height , paintTemporary);
                     }
                 }
             }
