@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using SkiaSharp;
 using System;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -111,7 +112,7 @@ namespace BLL.InformationalServices
                 return new DetectOutput
                 {
                     Image64 = Convert.ToBase64String(bytesArray),
-                    Lightness = Math.Floor(lumSum / lumCount)
+                    Lightness = double.IsNaN(Math.Floor(lumSum / lumCount)) ? 0 : Math.Floor(lumSum / lumCount)
                 };
             }
         }
