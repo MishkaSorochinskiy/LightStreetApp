@@ -22,6 +22,8 @@ namespace DAL.Entities
         public double? Latitude { get; set; }
         public double? Longtitude { get; set; }
         public DateTime? CreateTime { get; set; }
+        public DateTime? LastAudit { get; set; }
+        public string Identifier { get; set; }
 
         public virtual LampType LampType { get; set; }
     }

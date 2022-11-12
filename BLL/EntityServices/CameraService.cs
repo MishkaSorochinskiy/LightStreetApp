@@ -2,6 +2,7 @@
 using BLL.Models;
 using DAL;
 using DAL.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +33,8 @@ namespace BLL.Services
                 Latitude = cameraInput.Latitude,
                 Longtitude = cameraInput.Longtitude,
                 LampTypeId = cameraInput.LampTypeId,
+                LastAudit = DateTime.Now,
+                Identifier = Guid.NewGuid().ToString(),
                 CreateTime = DateTime.UtcNow
             };
 
