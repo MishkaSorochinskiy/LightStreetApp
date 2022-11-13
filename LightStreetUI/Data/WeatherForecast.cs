@@ -1,6 +1,6 @@
 using System;
 
-namespace LightStreetServer
+namespace LightStreetUI.Data
 {
     public class WeatherForecast
     {

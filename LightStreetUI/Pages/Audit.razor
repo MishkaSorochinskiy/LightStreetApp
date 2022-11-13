@@ -1,0 +1,70 @@
+﻿@page "/audit"
+@inject IJSRuntime jsruntime    
+@inject Microsoft.Extensions.Configuration.IConfiguration configuration
+@inject NavigationManager navigationManager
+@using Newtonsoft.Json
+@using LightStreetUI.Data
+
+<div class="container-fluid bg">
+    <div class="row pt-3">
+        <div class="col-8 table-wrapper-scroll-y scrollbar">
+            <table id="cameras-table" class="table table-bordered table-hover">
+                <thead class="sticky-top bg-info">
+                    <tr>
+                        <th scope="col">Identifier</th>
+                        <th scope="col">Last Audit</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var camera in cameras)
+                    {
+                        <tr class="@((DateTime.Now - camera.LastAudit).Value.TotalDays > 5 ? "table-danger" : "table-success")" onclick="changeMarkerLocation(@camera.Id)">
+                            <td>@camera.Identifier</td>
+                            <td>@camera.LastAudit</td>
+                            <td style="text-align:center;">
+                                <button type="button" class="btn btn-success" onclick="audit(@camera.Id)"><i class="oi oi-thumb-up"></i></button>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+        </div>
+        <div class="col-4">
+            <span id="identifier-lbl" class="label text-primary"></span>
+            <div id="audit-map"></div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+
+    public List<Camera> cameras { get; set; } = new List<Camera>();
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        using(HttpClient client = new HttpClient()){
+            var response = client.GetAsync(string.Format("{0}/camera", configuration["ServerUrl"])).Result;
+            if (response.IsSuccessStatusCode)
+                cameras = JsonConvert.DeserializeObject<List<Camera>>(response.Content.ReadAsStringAsync().Result)
+                    .OrderBy(c => c.LastAudit).ToList();
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await jsruntime.InvokeVoidAsync("initAuditMap");
+        }
+    }
+}
+
+<style>
+    #audit-map {
+        width: 100%;
+        height: 80vh;
+        background-color: grey;
+    }
+</style>

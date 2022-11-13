@@ -1,0 +1,39 @@
+﻿@page "/"
+@inject IJSRuntime jsruntime
+
+    <div class="row m-0 p-0">
+        <div class="col-sm m-0 p-0 d-inline-flex bd-highlight">
+            <div class="form-group mr-1">
+                <input type="text" id="start" class="form-control" placeholder="Origin" required>
+            </div>
+            <div class="form-group mr-1">
+                <input type="text" id="end" class="form-control" placeholder="Destination" required>
+            </div>
+            <div class="form-group">
+                <input type="submit" class="form-control btn btn-primary" onclick="calcRoute()">
+            </div>
+        </div>
+        <div class="col-2 m-0 p-0 text-right">
+            <button onclick="switchEdit()" id="editbtn" class="btn btn-outline-primary">Edit</button>
+        </div>
+    </div>
+
+    <div id="map"></div>
+
+@code{
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await jsruntime.InvokeVoidAsync("initMap");
+        }
+    }
+}
+<style>
+    #map {
+        width: 100%;
+        height: 80vh;
+        background-color: grey;
+    }
+</style>
