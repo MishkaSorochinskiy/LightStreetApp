@@ -34,7 +34,25 @@ function changeMarkerLocation(id){
                 position = { lat: res.responseJSON[0].latitude, lng: res.responseJSON[0].longtitude };
                 auditMarker.setPosition(position);
                 auditMap.setCenter(position);
+
+                google.maps.event.clearListeners(auditMarker, 'click');
+                let newpoint = new Point(auditMarker);
+                newpoint.lampTypeId = res.responseJSON[0].lampTypeId;
+                newpoint.setInfoWindow(new google.maps.InfoWindow(), auditMap);
+                newpoint.setInfoPhoto(res.responseJSON[0])
             }
         }
     }); 
+}
+
+
+function audit(id) {
+    $.ajax({
+        type: 'POST',
+        url: `${url}/camera/audit/${id}`,
+        contentType: 'application/json',
+        complete: async (res, success) => {
+            window.location.reload();
+        }
+    });
 }

@@ -41,5 +41,13 @@ namespace LightStreetServer.Controllers
             
             return responce;
         }
+
+        [HttpPost("audit/{id}")]
+        public async Task<IActionResult> AuditCamera(int id)
+        {
+            await CameraService.AuditAsync(id);
+
+            return Ok();
+        }
     }
 }

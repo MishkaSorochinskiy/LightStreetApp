@@ -63,6 +63,17 @@ namespace BLL.Services
             return lightsResponce;
         }
 
+        public async Task AuditAsync(int id)
+        {
+            var camera = uof.Repository<Camera>().Get(c => c.Id == id).FirstOrDefault();
+            if(camera != null)
+            {
+                camera.LastAudit = DateTime.Now;
+                uof.Repository<Camera>().Update(camera);
+                await uof.SaveChangesAsync();
+            }
+        }
+
         #region private methods
 
         private async Task<LampLightOutput> ProcessLampLightsAsync(Camera camera)
